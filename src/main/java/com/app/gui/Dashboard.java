@@ -2,10 +2,18 @@ package com.app.gui;
 
 import com.app.data.RobotData;
 import com.app.util.FRCConfig;
+
+import edu.wpi.first.networktables.ValueEventData;
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
+import eu.hansolo.medusa.GaugeDesign;
+import eu.hansolo.medusa.TickLabelOrientation;
+import eu.hansolo.medusa.Gauge.SkinType;
+import eu.hansolo.medusa.skins.ModernSkin;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.shape.Circle;
+import javafx.scene.paint.Color;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
@@ -30,10 +38,15 @@ public class Dashboard {
     private Map<String, CheckBox> createdCheckBoxes = new HashMap<>();
     private Map<String, Gauge> gauges = new HashMap<>();
 
+     public double Test;
+
     public void init(Stage primaryStage) {
         // Initialize RobotData
         robotData = new RobotData("10.20.28.2", 1735);
-
+     
+   
+     
+     
         // Initialize UI
         BorderPane root = new BorderPane();
         ScrollPane checkBoxScrollPane = new ScrollPane(checkBoxVBox);
@@ -48,7 +61,7 @@ public class Dashboard {
 
         // Stage setup
         primaryStage.setTitle("Robot Dashboard");
-        primaryStage.setScene(new Scene(root, 1900, 1060));
+        primaryStage.setScene(new Scene(root, 1900, 1060, Color.BLACK));
         primaryStage.setFullScreen(true);
         primaryStage.show();
 
@@ -90,7 +103,7 @@ public class Dashboard {
             String rootTable = key.split("/")[0];
             CheckBox checkBox = createdCheckBoxes.get(rootTable);
     
-            if (checkBox != null && checkBox.isSelected()) {
+           /*  if (checkBox != null && checkBox.isSelected()) {
                 textOutput.append(key).append(": ").append(value).append("\n");
     
                 if (uiType == FRCConfig.UIType.BUTTON) {
@@ -102,6 +115,7 @@ public class Dashboard {
                         System.out.println("Toggled " + shortKey + " to: " + !currentValue);  // Debug
                     });
                     gridPane.add(button, col, row);
+            
                 } else if (uiType == FRCConfig.UIType.GAUGE && value instanceof Number) {
                     FRCConfig.GaugeConfig config = FRCConfig.getConfig(shortKey);
                     Gauge gauge = gauges.getOrDefault(key, GaugeBuilder.create().title(shortKey).build());
@@ -119,10 +133,46 @@ public class Dashboard {
                     row++;
                 }
             }
+            */
         }
-    
+
+Test = robotData.getDoubleValue("BatV"); 
+
+Gauge Voltage = new Gauge();
+
+Voltage.setValue(Test);
+
+Voltage.setSkinType(Gauge.SkinType.SIMPLE);
+Voltage.setTitle("Voltage");  
+
+Voltage.setUnit("V");  //unit
+         Voltage.setUnitColor(Color.BLACK);
+         Voltage.setDecimals(1);  
+
+         Voltage.setMinValue(7.0);
+         Voltage.setMaxValue(13.0);
+         Voltage.setMajorTickMarksVisible(true);
+         Voltage.setMinorTickMarksVisible(true);
+         Voltage.setAnimated(true);
+         Voltage.setAnimationDuration(500);
+
+         Voltage.setValueColor(Color.BLACK);  
+         Voltage.setTitleColor(Color.BLACK);  
+         Voltage.setSubTitleColor(Color.BLACK);  
+         Voltage.setBarColor(Color.rgb(0, 214, 215));  
+         Voltage.setNeedleColor(Color.RED);  
+         Voltage.setThresholdColor(Color.RED); 
+         Voltage.setThreshold(85);
+         Voltage.setThresholdVisible(true);
+         Voltage.setTickLabelColor(Color.rgb(151, 151, 151));  
+         Voltage.setTickMarkColor(Color.BLACK);  
+         Voltage.setTickLabelOrientation(TickLabelOrientation.ORTHOGONAL); 
+
         textArea.setText(textOutput.toString());
         smartDashboardVBox.getChildren().clear();
         smartDashboardVBox.getChildren().add(gridPane);
+           
+gridPane.getChildren().add(Voltage);
+
     }    
 }

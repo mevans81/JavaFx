@@ -32,6 +32,12 @@ public class RobotData {
         return new LinkedHashMap<>(dynamicDataMap);
     }
 
+    public double getDoubleValue(String key) {
+        NetworkTable table = ntInstance.getTable("SmartDashboard");
+        return table.getEntry(key).getDouble(0.0);
+    }
+
+
     public void setBooleanValue(String key, boolean value) {
         NetworkTable table = ntInstance.getTable("SmartDashboard");
         table.getEntry(key).setBoolean(value);
