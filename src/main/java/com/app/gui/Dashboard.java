@@ -7,13 +7,28 @@ import edu.wpi.first.networktables.ValueEventData;
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
 import eu.hansolo.medusa.GaugeDesign;
+import eu.hansolo.medusa.LcdDesign;
+import eu.hansolo.medusa.LcdFont;
+import eu.hansolo.medusa.Marker;
+import eu.hansolo.medusa.Section;
+import eu.hansolo.medusa.TickLabelLocation;
 import eu.hansolo.medusa.TickLabelOrientation;
+import eu.hansolo.medusa.TickMarkType;
+import eu.hansolo.medusa.Gauge.KnobType;
+import eu.hansolo.medusa.Gauge.LedType;
+import eu.hansolo.medusa.Gauge.NeedleShape;
+import eu.hansolo.medusa.Gauge.NeedleSize;
+import eu.hansolo.medusa.Gauge.ScaleDirection;
 import eu.hansolo.medusa.Gauge.SkinType;
 import eu.hansolo.medusa.skins.ModernSkin;
 import javafx.application.Platform;
+import javafx.geometry.HorizontalDirection;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
@@ -21,6 +36,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -38,30 +54,32 @@ public class Dashboard {
     private Map<String, CheckBox> createdCheckBoxes = new HashMap<>();
     private Map<String, Gauge> gauges = new HashMap<>();
 
-     public double Test;
-
+    private double Test;
+private Gauge Voltage;
+    /**
+     * @param primaryStage
+     */
     public void init(Stage primaryStage) {
         // Initialize RobotData
         robotData = new RobotData("10.20.28.2", 1735);
      
-   
-     
-     
         // Initialize UI
-        BorderPane root = new BorderPane();
-        ScrollPane checkBoxScrollPane = new ScrollPane(checkBoxVBox);
+     //   BorderPane root = new BorderPane();
+     //   ScrollPane checkBoxScrollPane = new ScrollPane(checkBoxVBox);
 
         // Create SplitPane and add TextArea and VBox for gauges
-        SplitPane splitPane = new SplitPane();
-        splitPane.getItems().addAll(textArea, smartDashboardVBox);
+      //  SplitPane splitPane = new SplitPane();
+      //  splitPane.getItems().addAll(textArea, smartDashboardVBox);
 
         // Add to root layout
-        root.setLeft(checkBoxScrollPane);
-        root.setCenter(splitPane);
+     //   root.setLeft(checkBoxScrollPane);
+     //   root.setCenter(splitPane);
 
         // Stage setup
+       StackPane root = new StackPane();    ///////////////////////////////////////////
         primaryStage.setTitle("Robot Dashboard");
-        primaryStage.setScene(new Scene(root, 1900, 1060, Color.BLACK));
+        primaryStage.setScene(new Scene(root, 300, 250, Color.BLACK));
+
         primaryStage.setFullScreen(true);
         primaryStage.show();
 
@@ -71,8 +89,41 @@ public class Dashboard {
             Platform.runLater(() -> {
                 updateCheckBoxes(data);
                 updateSmartDashboard(data);
-            });
+            }); 
         }, 0, 20, TimeUnit.MILLISECONDS);
+
+Voltage  = GaugeBuilder.create()
+                    .skinType(Gauge.SkinType.HORIZONTAL)
+                     .backgroundPaint(Color.BLACK)
+                     .foregroundBaseColor(Color.WHITE)
+                       .prefSize(400, 200)
+                       .startAngle(290)
+                       .angleRange(220)
+                       .minValue(7)
+                       .maxValue(13)
+                       .valueVisible(true)
+                     
+                       .minorTickMarksVisible(false)
+                       .majorTickMarkType(TickMarkType.BOX)
+                       .mediumTickMarkType(TickMarkType.BOX)
+                       .title("Battery\nVoltage")
+        
+                       .needleShape(NeedleShape.ROUND)
+                       .needleSize(NeedleSize.THICK)
+                       .needleColor(Color.RED)
+                       .knobColor(Color.WHITE)
+                       .customTickLabelsEnabled(true)
+                       .customTickLabelFontSize(40)
+                       .customTickLabels("7", "8", "9", "10", "11", "12", "13")
+                       .sections(new Section(7, 9, Color.RED),
+                                 new Section(9, 11, Color.YELLOW),
+                                 new Section(11, 13, Color.FORESTGREEN))
+                       .sectionsVisible(true)
+                       .animated(true)
+                       .build();
+
+root.getChildren().add(Voltage);        
+
     }
 
     private void updateCheckBoxes(Map<String, Object> data) {
@@ -87,7 +138,7 @@ public class Dashboard {
             }
         }
     }
-
+ 
     private void updateSmartDashboard(Map<String, Object> data) {
         GridPane gridPane = new GridPane();
         int row = 0, col = 0;
@@ -134,45 +185,21 @@ public class Dashboard {
                 }
             }
             */
+
+
+//Test = robotData.getDoubleValue("BatV");
+//System.out.println(Test);
+//Voltage.setValue(Test);
         }
-
-Test = robotData.getDoubleValue("BatV"); 
-
-Gauge Voltage = new Gauge();
-
+        
+Test = robotData.getDoubleValue("BatV");
+System.out.println(Test);
 Voltage.setValue(Test);
 
-Voltage.setSkinType(Gauge.SkinType.SIMPLE);
-Voltage.setTitle("Voltage");  
-
-Voltage.setUnit("V");  //unit
-         Voltage.setUnitColor(Color.BLACK);
-         Voltage.setDecimals(1);  
-
-         Voltage.setMinValue(7.0);
-         Voltage.setMaxValue(13.0);
-         Voltage.setMajorTickMarksVisible(true);
-         Voltage.setMinorTickMarksVisible(true);
-         Voltage.setAnimated(true);
-         Voltage.setAnimationDuration(500);
-
-         Voltage.setValueColor(Color.BLACK);  
-         Voltage.setTitleColor(Color.BLACK);  
-         Voltage.setSubTitleColor(Color.BLACK);  
-         Voltage.setBarColor(Color.rgb(0, 214, 215));  
-         Voltage.setNeedleColor(Color.RED);  
-         Voltage.setThresholdColor(Color.RED); 
-         Voltage.setThreshold(85);
-         Voltage.setThresholdVisible(true);
-         Voltage.setTickLabelColor(Color.rgb(151, 151, 151));  
-         Voltage.setTickMarkColor(Color.BLACK);  
-         Voltage.setTickLabelOrientation(TickLabelOrientation.ORTHOGONAL); 
-
-        textArea.setText(textOutput.toString());
-        smartDashboardVBox.getChildren().clear();
-        smartDashboardVBox.getChildren().add(gridPane);
-           
-gridPane.getChildren().add(Voltage);
-
-    }    
 }
+    //    textArea.setText(textOutput.toString());
+     //   smartDashboardVBox.getChildren().clear();
+     //   smartDashboardVBox.getChildren().add(gridPane);
+           
+//root.getChildren().add(Voltage);
+}    
