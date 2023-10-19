@@ -36,6 +36,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -55,7 +56,7 @@ public class Dashboard {
     private Map<String, Gauge> gauges = new HashMap<>();
 
     private double Test;
-private Gauge Voltage;
+private Gauge Voltage, Current;
     /**
      * @param primaryStage
      */
@@ -75,13 +76,7 @@ private Gauge Voltage;
      //   root.setLeft(checkBoxScrollPane);
      //   root.setCenter(splitPane);
 
-        // Stage setup
-       StackPane root = new StackPane();    ///////////////////////////////////////////
-        primaryStage.setTitle("Robot Dashboard");
-        primaryStage.setScene(new Scene(root, 300, 250, Color.BLACK));
 
-        primaryStage.setFullScreen(true);
-        primaryStage.show();
 
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(() -> {
@@ -96,7 +91,7 @@ Voltage  = GaugeBuilder.create()
                     .skinType(Gauge.SkinType.HORIZONTAL)
                      .backgroundPaint(Color.BLACK)
                      .foregroundBaseColor(Color.WHITE)
-                       .prefSize(400, 200)
+                       .prefSize(800, 400)
                        .startAngle(290)
                        .angleRange(220)
                        .minValue(7)
@@ -122,7 +117,59 @@ Voltage  = GaugeBuilder.create()
                        .animated(true)
                        .build();
 
-root.getChildren().add(Voltage);        
+
+                       
+//Voltage.setLayoutX(0);Voltage.setLayoutY(0);
+
+//Current.setLayoutX(300);Current.setLayoutY(0);
+
+
+Current  = GaugeBuilder.create()
+                    .skinType(Gauge.SkinType.HORIZONTAL)
+                     .backgroundPaint(Color.BLACK)
+                     .foregroundBaseColor(Color.WHITE)
+                       .prefSize(800, 400)
+                       .startAngle(290)
+                       .angleRange(220)
+                       .minValue(0)
+                       .maxValue(80)
+                       .valueVisible(true)
+                       .minorTickMarksVisible(false)
+                       .majorTickMarkType(TickMarkType.BOX)
+                       .mediumTickMarkType(TickMarkType.BOX)
+                       .title("Battery\nCurrent")
+        
+                       .needleShape(NeedleShape.ROUND)
+                       .needleSize(NeedleSize.THICK)
+                       .needleColor(Color.RED)
+                       .knobColor(Color.WHITE)
+                       .customTickLabelsEnabled(true)
+                       .customTickLabelFontSize(40)
+                       .customTickLabels("0", "10", "20", "30", "40", "50", "60", "70", "80")
+                      
+                       .sectionsVisible(true)
+                       .animated(true)
+                       .build();
+        // Stage setup
+       
+        HBox displayHBox= new HBox(Current, Voltage);
+       
+        StackPane root = new StackPane(displayHBox); 
+       
+       ///////////////////////////////////////////
+        primaryStage.setTitle("Robot Dashboard");
+        primaryStage.setScene(new Scene(root, Color.BLACK));
+
+        displayHBox.setSpacing(20);
+        
+        primaryStage.setFullScreen(true);
+        primaryStage.show();
+
+
+//root.getChildren().add(Voltage);  
+  //   root.getChildren().add(Current);
+
+
 
     }
 
@@ -192,10 +239,9 @@ root.getChildren().add(Voltage);
 //Voltage.setValue(Test);
         }
         
-Test = robotData.getDoubleValue("BatV");
-System.out.println(Test);
-Voltage.setValue(Test);
 
+Voltage.setValue(robotData.getDoubleValue("BatV"));
+Current.setValue(robotData.getDoubleValue("BatI"));
 }
     //    textArea.setText(textOutput.toString());
      //   smartDashboardVBox.getChildren().clear();
