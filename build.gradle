@@ -3,6 +3,7 @@ plugins {
     id 'application'
 }
 
+
 repositories {
     mavenCentral()
     maven {
@@ -22,9 +23,18 @@ dependencies {
 application {
     mainClassName = 'com.app.MainApp'  // Update this to match your actual package and class name
     applicationDefaultJvmArgs = [
-        '--add-modules', 'javafx.controls,javafx.fxml'
+        '--add-modules', 'javafx.controls,javafx.fxml',
     ]
 }   
+
+task customFatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'com.app.MainApp'
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
 
 task copyDll(type: Copy) {
     from 'libs'

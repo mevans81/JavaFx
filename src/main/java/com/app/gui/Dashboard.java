@@ -55,28 +55,14 @@ public class Dashboard {
     private Map<String, CheckBox> createdCheckBoxes = new HashMap<>();
     private Map<String, Gauge> gauges = new HashMap<>();
 
-    private double Test;
-private Gauge Voltage, Current;
+    private double Test, thresholdLow;
+private Gauge Voltage, Current, Gyro, Temp;
     /**
      * @param primaryStage
      */
     public void init(Stage primaryStage) {
         // Initialize RobotData
         robotData = new RobotData("10.20.28.2", 1735);
-     
-        // Initialize UI
-     //   BorderPane root = new BorderPane();
-     //   ScrollPane checkBoxScrollPane = new ScrollPane(checkBoxVBox);
-
-        // Create SplitPane and add TextArea and VBox for gauges
-      //  SplitPane splitPane = new SplitPane();
-      //  splitPane.getItems().addAll(textArea, smartDashboardVBox);
-
-        // Add to root layout
-     //   root.setLeft(checkBoxScrollPane);
-     //   root.setCenter(splitPane);
-
-
 
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(() -> {
@@ -87,72 +73,119 @@ private Gauge Voltage, Current;
             }); 
         }, 0, 20, TimeUnit.MILLISECONDS);
 
-Voltage  = GaugeBuilder.create()
-                    .skinType(Gauge.SkinType.HORIZONTAL)
+Gyro = GaugeBuilder.create()
+                    .skinType(Gauge.SkinType.GAUGE)
                      .backgroundPaint(Color.BLACK)
                      .foregroundBaseColor(Color.WHITE)
                        .prefSize(380, 400)
-                       .startAngle(290)
-                       .angleRange(220)
-                       .minValue(7)
-                       .maxValue(13)
+                      .minValue(0)
+                       .maxValue(360)
+                    
+                       .startAngle(180)
+                       .angleRange(360)
+                      .autoScale(false) 
+                    
                        .valueVisible(true)
-                     
                        .minorTickMarksVisible(false)
                        .majorTickMarkType(TickMarkType.BOX)
                        .mediumTickMarkType(TickMarkType.BOX)
-                       .title("Battery\nVoltage")
-        
+                       .title("Gyro")
                        .needleShape(NeedleShape.ROUND)
                        .needleSize(NeedleSize.THICK)
                        .needleColor(Color.RED)
                        .knobColor(Color.WHITE)
                        .customTickLabelsEnabled(true)
-                       .customTickLabelFontSize(40)
-                       .customTickLabels("7", "8", "9", "10", "11", "12", "13")
-                       .sections(new Section(7, 9, Color.RED),
-                                 new Section(9, 11, Color.YELLOW),
-                                 new Section(11, 13, Color.FORESTGREEN))
-                       .sectionsVisible(true)
-                       .animated(true)
+                       .customTickLabelFontSize(35)
+                       .customTickLabels("0", "45", "90", "135", "180", "225", "270", "315")
+                      // .animated(true)
                        .build();
 
 
-                       
-//Voltage.setLayoutX(0);Voltage.setLayoutY(0);
+Voltage  = GaugeBuilder.create()
+                    .skinType(Gauge.SkinType.HORIZONTAL)
+                    .backgroundPaint(Color.BLACK)
+                    .foregroundBaseColor(Color.WHITE)
+                    .prefSize(380, 400)
+                    .startAngle(290)
+                    .angleRange(220)
+                    .minValue(7)
+                    .maxValue(13)
+                    .valueVisible(true)
+                    .minorTickMarksVisible(false)
+                    .majorTickMarkType(TickMarkType.BOX)
+                    .mediumTickMarkType(TickMarkType.BOX)
+                    .title("Battery\nVoltage")
+                    .needleShape(NeedleShape.ROUND)
+                    .needleSize(NeedleSize.THICK)
+                    .needleColor(Color.RED)
+                    .knobColor(Color.WHITE)
+                    .customTickLabelsEnabled(true)
+                    .customTickLabelFontSize(35)
+                    .customTickLabels("7", "8", "9", "10", "11", "12", "13")
+                    .sections(new Section(7, 9, Color.RED),
+                              new Section(9, 11, Color.YELLOW),
+                              new Section(11, 13, Color.FORESTGREEN))
+                    .sectionsVisible(true)
+                    .animated(true)
+                    .build();
 
-//Current.setLayoutX(300);Current.setLayoutY(0);
+Temp  = GaugeBuilder.create()
+                    .skinType(Gauge.SkinType.HORIZONTAL)
+                    .backgroundPaint(Color.BLACK)
+                    .foregroundBaseColor(Color.WHITE)
+                    .prefSize(380, 400)
+                 //   .startAngle(270)
+                    .angleRange(180)
+                    .minValue(60)
+                    .maxValue(260)
+                    .valueVisible(true)
+                    .minorTickMarksVisible(false)
 
+                    .majorTickMarkType(TickMarkType.BOX)
+                    //.mediumTickMarkType(TickMarkType.BOX)
+                    .title("Motor\nTemp")
+                    .needleShape(NeedleShape.ROUND)
+                    .needleSize(NeedleSize.THICK)
+                    .needleColor(Color.RED)
+                    .knobColor(Color.WHITE)
+                    .customTickLabelsEnabled(true)
+                    .customTickLabelFontSize(35)
+                    .customTickLabels("60", " ", "100", " ", "140", " ", "180",
+                                                      " ", "220", " ", "260")
+                    .sections(new Section(50, 100, Color.GREEN),
+                              new Section(100, 200, Color.YELLOW),
+                              new Section(200, 300, Color.RED))
+                    .sectionsVisible(true)
+                    .animated(false)
+                    .build();
 
 Current  = GaugeBuilder.create()
                     .skinType(Gauge.SkinType.HORIZONTAL)
-                     .backgroundPaint(Color.BLACK)
-                     .foregroundBaseColor(Color.WHITE)
-                       .prefSize(380, 400)
-                       .startAngle(290)
-                       .angleRange(220)
-                       .minValue(0)
-                       .maxValue(80)
-                       .valueVisible(true)
-                       .minorTickMarksVisible(false)
-                       .majorTickMarkType(TickMarkType.BOX)
-                       .mediumTickMarkType(TickMarkType.BOX)
-                       .title("Battery\nCurrent")
-        
-                       .needleShape(NeedleShape.ROUND)
-                       .needleSize(NeedleSize.THICK)
-                       .needleColor(Color.RED)
-                       .knobColor(Color.WHITE)
-                       .customTickLabelsEnabled(true)
-                       .customTickLabelFontSize(40)
-                       .customTickLabels("0", "10", "20", "30", "40", "50", "60", "70", "80")
-                      
-                       .sectionsVisible(true)
-                       .animated(true)
-                       .build();
+                    .backgroundPaint(Color.BLACK)
+                    .foregroundBaseColor(Color.WHITE)
+                    .prefSize(380, 400)
+                    .startAngle(290)
+                    .angleRange(220)
+                    .minValue(0)
+                    .maxValue(80)
+                    .valueVisible(true)
+                    .minorTickMarksVisible(false)
+                    .majorTickMarkType(TickMarkType.BOX)
+                    .mediumTickMarkType(TickMarkType.BOX)
+                    .title("Battery\nCurrent")
+                    .needleShape(NeedleShape.ROUND)
+                    .needleSize(NeedleSize.THICK)
+                    .needleColor(Color.RED)
+                    .knobColor(Color.WHITE)
+                    .customTickLabelsEnabled(true)
+                    .customTickLabelFontSize(35)
+                    .customTickLabels("0", "10", "20", "30", "40", "50", "60", "70", "80")  
+                    .sectionsVisible(true)
+                    .animated(true)
+                    .build();
         // Stage setup
        
-        HBox displayHBox= new HBox(Current, Voltage);
+        HBox displayHBox= new HBox(Current, Voltage);//, Gyro, Temp);
        
         StackPane root = new StackPane(displayHBox); 
        
@@ -164,12 +197,6 @@ Current  = GaugeBuilder.create()
         
         primaryStage.setFullScreen(true);
         primaryStage.show();
-
-
-//root.getChildren().add(Voltage);  
-  //   root.getChildren().add(Current);
-
-
 
     }
 
@@ -200,52 +227,14 @@ Current  = GaugeBuilder.create()
             
             String rootTable = key.split("/")[0];
             CheckBox checkBox = createdCheckBoxes.get(rootTable);
-    
-           /*  if (checkBox != null && checkBox.isSelected()) {
-                textOutput.append(key).append(": ").append(value).append("\n");
-    
-                if (uiType == FRCConfig.UIType.BUTTON) {
-                    ToggleButton button = new ToggleButton(shortKey);
-                    button.setSelected(robotData.getBooleanValue(shortKey));
-                    button.setOnAction(e -> {
-                        boolean currentValue = robotData.getBooleanValue(shortKey);
-                        robotData.setBooleanValue(shortKey, !currentValue);
-                        System.out.println("Toggled " + shortKey + " to: " + !currentValue);  // Debug
-                    });
-                    gridPane.add(button, col, row);
-            
-                } else if (uiType == FRCConfig.UIType.GAUGE && value instanceof Number) {
-                    FRCConfig.GaugeConfig config = FRCConfig.getConfig(shortKey);
-                    Gauge gauge = gauges.getOrDefault(key, GaugeBuilder.create().title(shortKey).build());
-                    gauge.setMinValue(config.minValue);
-                    gauge.setMaxValue(config.maxValue);
-                    gauge.setUnit(config.unit);
-                    gauge.setValue(((Number) value).doubleValue());
-                    gauges.put(key, gauge);
-                    gridPane.add(gauge, col, row);
-                }
-    
-                col++;
-                if (col > 3) {  // Reset column and increment row after every 4th element
-                    col = 0;
-                    row++;
-                }
-            }
-            */
-
-
-//Test = robotData.getDoubleValue("BatV");
-//System.out.println(Test);
-//Voltage.setValue(Test);
         }
-        
+Voltage.setValue(robotData.getDoubleValue("BatV"));        
+Current.setValue(robotData.getDoubleValue("BatI"));   
 
-Voltage.setValue(robotData.getDoubleValue("BatV"));
-Current.setValue(robotData.getDoubleValue("BatI"));
+double test = 45;
+Gyro.setValue(test);//(robotData.getDoubleValue("BotA")%360)*1.111111);   
+Temp.setValue(120);
+
 }
-    //    textArea.setText(textOutput.toString());
-     //   smartDashboardVBox.getChildren().clear();
-     //   smartDashboardVBox.getChildren().add(gridPane);
-           
-//root.getChildren().add(Voltage);
+
 }    
