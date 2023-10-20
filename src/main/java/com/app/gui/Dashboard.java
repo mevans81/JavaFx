@@ -62,14 +62,14 @@ private Gauge Voltage, Current, Gyro, Temp;
      */
     public void init(Stage primaryStage) {
         // Initialize RobotData
-        robotData = new RobotData("10.20.28.2", 1735);
+//        robotData = new RobotData("10.20.28.2", 1735);
 
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(() -> {
             Map<String, Object> data = robotData.fetchData();
             Platform.runLater(() -> {
-                updateCheckBoxes(data);
-                updateSmartDashboard(data);
+    //            updateCheckBoxes(data);
+    //            updateSmartDashboard(data);
             }); 
         }, 0, 20, TimeUnit.MILLISECONDS);
 
@@ -185,6 +185,11 @@ Current  = GaugeBuilder.create()
                     .build();
         // Stage setup
        
+ Voltage.setValue(11.8);
+ Current.setValue(30.14);
+
+
+
         HBox displayHBox= new HBox(Current, Voltage);//, Gyro, Temp);
        
         StackPane root = new StackPane(displayHBox); 
@@ -199,7 +204,7 @@ Current  = GaugeBuilder.create()
         primaryStage.show();
 
     }
-
+ /*  ==================================================================
     private void updateCheckBoxes(Map<String, Object> data) {
 
         for (String key : data.keySet()) {
@@ -212,7 +217,7 @@ Current  = GaugeBuilder.create()
             }
         }
     }
- 
+
     private void updateSmartDashboard(Map<String, Object> data) {
         GridPane gridPane = new GridPane();
         int row = 0, col = 0;
@@ -228,6 +233,7 @@ Current  = GaugeBuilder.create()
             String rootTable = key.split("/")[0];
             CheckBox checkBox = createdCheckBoxes.get(rootTable);
         }
+
 Voltage.setValue(robotData.getDoubleValue("BatV"));        
 Current.setValue(robotData.getDoubleValue("BatI"));   
 
@@ -236,5 +242,5 @@ Gyro.setValue(test);//(robotData.getDoubleValue("BotA")%360)*1.111111);
 Temp.setValue(120);
 
 }
-
+*/           
 }    
