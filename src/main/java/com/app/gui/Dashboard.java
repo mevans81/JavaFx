@@ -3,6 +3,8 @@ package com.app.gui;
 import com.app.data.RobotData;
 import com.app.util.FRCConfig;
 
+import java.util.Calendar;
+
 import edu.wpi.first.networktables.ValueEventData;
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
@@ -24,6 +26,7 @@ import eu.hansolo.medusa.skins.ModernSkin;
 import javafx.application.Platform;
 import javafx.geometry.HorizontalDirection;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
@@ -34,13 +37,18 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -57,6 +65,11 @@ public class Dashboard {
 
     private double Test, thresholdLow;
 private Gauge Voltage, Current, Gyro, Temp;
+
+private AnalogClock Clock;
+
+private Image phantom;
+
     /**
      * @param primaryStage
      */
@@ -73,7 +86,9 @@ private Gauge Voltage, Current, Gyro, Temp;
             }); 
         }, 0, 20, TimeUnit.MILLISECONDS);
 
-Gyro = GaugeBuilder.create()
+     AnalogClock Clock = new AnalogClock();       
+
+     Gyro = GaugeBuilder.create()
                     .skinType(Gauge.SkinType.GAUGE)
                      .backgroundPaint(Color.BLACK)
                      .foregroundBaseColor(Color.WHITE)
@@ -189,6 +204,35 @@ Current  = GaugeBuilder.create()
  Current.setValue(30.14);
 
 
+ Image phantom = null;
+try {
+    phantom = new Image(new FileInputStream("c:\\FRC Java Code\\Phantom1.jpg"));
+} catch (FileNotFoundException e) {
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+}
+
+
+ ImageView Phantom =new ImageView(phantom);
+ Phantom.setX(0);
+ Phantom.setFitWidth(400);
+Phantom.setY(195);
+ Phantom.setPreserveRatio(true);
+
+        Pane startup = new Pane();
+
+startup.setMaxSize(800,480);
+startup.setMinSize(800, 480);
+
+Node TempClock = Clock.getClock();
+TempClock.setLayoutX(415);
+TempClock.setLayoutY(-95);
+
+TempClock.setScaleX(.6);TempClock.setScaleY(.6);
+
+startup.getChildren().add(Phantom);
+startup.getChildren().add(TempClock);
+ 
 
         HBox displayHBox= new HBox(Current, Voltage);//, Gyro, Temp);
        
@@ -196,11 +240,15 @@ Current  = GaugeBuilder.create()
        
        ///////////////////////////////////////////
         primaryStage.setTitle("Robot Dashboard");
-        primaryStage.setScene(new Scene(root, Color.BLACK));
+    //    primaryStage.setScene(new Scene(root, Color.BLACK));
+ primaryStage.setScene(new Scene(startup, Color.BLACK));
 
         displayHBox.setSpacing(20);
         
-        primaryStage.setFullScreen(true);
+        
+        DateAndTime.DateAndTime1();
+
+//        primaryStage.setFullScreen(true);
         primaryStage.show();
 
     }
